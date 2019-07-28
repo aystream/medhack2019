@@ -18,7 +18,7 @@ import ru.mts.medhack2019.model.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-07-28T12:10:18+0300",
+    date = "2019-07-28T12:57:13+0300",
     comments = "version: 1.3.0.Final, compiler: javac, environment: Java 1.8.0_201 (Oracle Corporation)"
 )
 @Component
