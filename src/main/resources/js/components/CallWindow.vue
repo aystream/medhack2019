@@ -1,24 +1,25 @@
 <template>
     <div class="call-component">
-        <div class="layout" >
+        <div class="layout">
             <div class="call flex-col">
                 <div class="call-name"></div>
                 <div class="call-video">
-                    <iframe src="https://appr.tc/r/med338" width=816px height=400px allow="geolocation; microphone; camera" scrolling="no">
+                    <iframe :src="'https://appr.tc/r/' + roomId" width=816px height=400px
+                            allow="geolocation; microphone; camera" scrolling="no">
                         <p>Your browser does not support iframes.</p>
                     </iframe>
                 </div>
                 <div class="panel-bottom">
                     <img class="callend" src="/callend.png" v-on:click="goBack">
-                    <img class="mute" src="/mute.png" >
-                    <img class="speaker" src="/speaker.svg" >
+                    <img class="mute" src="/mute.png">
+                    <img class="speaker" src="/speaker.svg">
                 </div>
             </div>
             <div class="log">
                 <div class="log-name">{{model.name}}</div>
                 <div class="log-address">{{model.address}}</div>
                 <div class="log-address-comment">{{model.addressComment}}</div>
-                <div class="log-1-buttons" >
+                <div class="log-1-buttons">
                     <a class="btn btn-white">История обращений</a>
                     <a class="btn">Медицинская карта</a>
                 </div>
@@ -50,7 +51,14 @@
     export default {
         name: "CallWindow",
         components: {CheckBox},
+
+
         created() {
+            this.roomId = this.$route.query.roomId;
+            console.log(this.$route.query);
+            if (this.roomId === undefined || this.roomId == null) {
+                this.roomId = "5453454353";
+            }
             this.getCard()
         },
         data() {
@@ -65,12 +73,11 @@
                     resultsDtae: "24 июля 2019, 12:30",
                     second: "",
                     secondDate: "1 августа 2019, 12:30",
-                    checkboxes: [
-
-                    ]
+                    checkboxes: []
 
 
                 },
+                roomId: "med123455",
                 currentMessage: "",
                 notes: [],
                 checkboxes: ["Озноб", "Ощущение першения в горле", "Головная боль", "Боли в суставах"]
@@ -84,14 +91,14 @@
                 let newNote = {
                     createDate: new Date(),
                     text: this.currentMessage,
-                } ;
+                };
                 this.notes.push(newNote)
                 this.currentMessage = ""
             },
 
             getCard() {
                 axios.get('api/consultations')
-                    .then(({ data }) => {
+                    .then(({data}) => {
                         this.model = data
                     })
                     .catch(e => {
@@ -143,6 +150,7 @@
     .notes {
         list-style: none;
     }
+
     .doctor-note {
         text-align: left;
         margin: 0px;
@@ -192,7 +200,10 @@
     }
 
 
-    .log-1-buttons { margin-top: 16px; margin-bottom: 28px; }
+    .log-1-buttons {
+        margin-top: 16px;
+        margin-bottom: 28px;
+    }
 
     .log-address, .log-address-comment {
         color: #6E7782;
@@ -220,6 +231,7 @@
         font-weight: bold;
         margin-bottom: 16px;
     }
+
     .log-results .btn {
         margin-left: 16px;
     }
