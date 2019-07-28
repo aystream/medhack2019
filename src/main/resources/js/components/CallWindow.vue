@@ -4,28 +4,30 @@
             <div class="call flex-col">
                 <div class="call-name"></div>
                 <div class="call-video">
-                    <iframe src="https://appr.tc/r/31337" width=816px height=400px allow="geolocation; microphone; camera" scrolling="no">
+                    <iframe src="https://appr.tc/r/med338" width=816px height=400px allow="geolocation; microphone; camera" scrolling="no">
                         <p>Your browser does not support iframes.</p>
                     </iframe>
                 </div>
                 <div class="panel-bottom">
                     <img class="callend" src="/callend.png" v-on:click="goBack">
+                    <img class="mute" src="/mute.png" >
+                    <img class="speaker" src="/speaker.svg" >
                 </div>
             </div>
             <div class="log">
-                <div class="log-name">Городецкий Андрей Валерьевич</div>
-                <div class="log-address">Поликлиника 1, г. Москва</div>
-                <div class="log-address-comment">2 участок общей практики</div>
+                <div class="log-name">{{model.name}}</div>
+                <div class="log-address">{{model.address}}</div>
+                <div class="log-address-comment">{{model.addressComment}}</div>
                 <div class="log-1-buttons" >
                     <a class="btn btn-white">История обращений</a>
                     <a class="btn">Медицинская карта</a>
                 </div>
-                <div class="log-diagnose">Катаральная ангина</div>
-                <div class="log-simptoms"><b>Симптомы:&nbsp;</b>Высокая температура тела, умереннная реакиця регионарных лимфатических узлов, отечность небных дужек, гиперимия миндалин</div>
+                <div class="log-diagnose">{{model.diagnose}}</div>
+                <div class="log-simptoms"><b>Симптомы:&nbsp;</b>{{model.simptoms}}</div>
                 <div class="log-results">Результаты первичного осмотра<a class="btn">Выгрузить</a></div>
-                <div class="log-results-date">24 июля 2019, 12:30</div>
+                <div class="log-results-date">{{model.resultsDtae}}</div>
                 <div class="log-second">Вторичный осмотр</div>
-                <div class="log-second-date">1 августа 2019, 12:30</div>
+                <div class="log-second-date">{{model.secondDate}}</div>
                 <div class="log-checkboxes flex-col">
                     <check-box v-for="box in checkboxes" v-bind:title="box"></check-box>
                 </div>
@@ -36,31 +38,39 @@
                     <a class="btn">Запись на выписку</a>
                     <a class="btn">Повторная консультация</a>
                 </div>
-<!--                <textarea class="call-note" cols="40" rows="3" v-on:keyup.enter="addNote" v-model="currentMessage">-->
-<!--                </textarea>-->
-<!--                <ul class="notes" >-->
-<!--                    <li class="doctor-note" v-for="note in notes.slice().reverse()" >-->
-<!--                        <div class="note-date">{{note.createDate.getHours()}}:{{note.createDate.getMinutes()}}</div>-->
-<!--                        <div class="note-text">{{note.text}}</div>-->
-<!--                    </li>-->
-<!--                </ul>-->
             </div>
         </div>
-    <!-- Begin Fresh Tilled Soil Video Chat Embed Code -->
-    <!--    <div id="freshtilledsoil_embed_widget" class="video-chat-widget"></div>-->
-    <!--    <script id="fts" src="http://freshtilledsoil.com/embed/webrtc-v5.js?r=FTS0316-CZ6NqG97"></script>-->
-    <!-- End Fresh Tilled Soil Video Chat Embed Code -->
     </div>
 </template>
 
 <script>
+    import axios from 'axios'
     import CheckBox from "./CheckBox";
 
     export default {
         name: "CallWindow",
         components: {CheckBox},
+        created() {
+            this.getCard()
+        },
         data() {
             return {
+                model: {
+                    name: "Городецкий Андрей Валерьевич",
+                    address: "Поликлиника 1, г. Москва",
+                    addressComment: "2 участок общей практики",
+                    diagnose: "Катаральная ангина",
+                    simptoms: "Высокая температура тела, умереннная реакиця регионарных лимфатических узлов, отечность небных дужек, гиперимия миндалин",
+                    results: "",
+                    resultsDtae: "24 июля 2019, 12:30",
+                    second: "",
+                    secondDate: "1 августа 2019, 12:30",
+                    checkboxes: [
+
+                    ]
+
+
+                },
                 currentMessage: "",
                 notes: [],
                 checkboxes: ["Озноб", "Ощущение першения в горле", "Головная боль", "Боли в суставах"]
@@ -79,11 +89,23 @@
                 this.currentMessage = ""
             },
 
-        }
+            getCard() {
+                axios.get('api/consultations')
+                    .then(({ data }) => {
+                        this.model = data
+                    })
+                    .catch(e => {
+                        this.errors.push(e)
+                    })
+            }
+
+        },
+
     }
 </script>
 
 <style scoped>
+
     .btn {
         width: 300px;
         height: 40px;
@@ -107,7 +129,7 @@
     .call-video {
         text-align: left;
         width: 816px;
-        margin-top: 66px;
+        margin-top: 88px;
     }
 
     .layout {
@@ -149,8 +171,11 @@
         text-align: left;
     }
 
-    .callend {
+    .callend, .mute, .speaker {
         margin-left: 40px;
+        cursor: pointer;
+        line-height: 118px;
+        vertical-align: middle;
     }
 
     .log {
@@ -163,6 +188,7 @@
         font-size: 36px;
         font-family: 'Roboto', sans-serif;
         font-weight: bold;
+        margin-bottom: 20px;
     }
 
 
@@ -200,6 +226,7 @@
 
     .log-results-date {
         margin-bottom: 16px;
+        margin-top: -16px;
     }
 
     .log-second {
@@ -211,14 +238,13 @@
 
     .log-second-date {
         margin-bottom: 16px;
+        margin-top: -16px;
     }
 
     .log-checkboxes {
         margin-bottom: 16px;
         width: 518px;
     }
-
-
 
     .log-comments textarea {
         margin-top: 16px;

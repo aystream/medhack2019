@@ -47,5 +47,6 @@
         border-radius: 10px;
         padding: 8px 16px;
         float: right;
+        cursor: pointer;
     }
 </style>

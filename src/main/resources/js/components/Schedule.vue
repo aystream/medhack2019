@@ -85,19 +85,13 @@
                 axios.get('/api/cards')
                     .then(({ data }) => {
                         this.items = data.messages
-                        let counter = document.getElementById("notifications_count")
-                        counter.innerHTML = Object.keys(data.messages).length
                     })
                     .catch(e => {
                         this.errors.push(e)
                     })
             },
             call() {
-                console.log("Query", this.$route.path);
-                // location.href= "/call/";
                 this.$router.push('/call')
-
-                // this.$router.push('/calling/')
             }
         }
 
@@ -105,6 +99,10 @@
 </script>
 
 <style scoped>
+    a {
+        cursor: pointer;
+    }
+
     .schedule-title {
         text-align: left;
         padding-left: 40px;
@@ -205,6 +203,7 @@
         margin-right: 16px;
         height: 32px;
         line-height: 32px;
+        cursor: pointer;
     }
 
 
